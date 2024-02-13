@@ -1,9 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { setFilter } from '../redux/contactsSlice';
-import { filterSelector } from '../redux/selectors';
+import { selectError, selectFilter } from '../redux/selectors';
 
 export const Filter = () => {
-  const filter = useSelector(filterSelector);
+  const error = useSelector(selectError);
+  const filter = useSelector(selectFilter);
   const dispatch = useDispatch();
 
   const handleChange = e => {
@@ -13,6 +14,7 @@ export const Filter = () => {
 
   return (
     <div>
+      {error && 'something went wrong'}
       <h3>Find contacts by name</h3>
       <input
         type="filter"

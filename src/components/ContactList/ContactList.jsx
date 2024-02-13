@@ -1,15 +1,14 @@
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact } from '../redux/contactsSlice';
 import { useMemo } from 'react';
-import { contactsSelector, filterSelector } from '../redux/selectors';
-import { ListGroup, Button } from 'react-bootstrap';
+import { deleteContact } from '../redux/operations';
+import { selectItems, selectFilter, selectError } from '../redux/selectors';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
-import css from './ContactList.module.css';
 
 export const ContactsList = () => {
-  const contacts = useSelector(contactsSelector);
-  const filter = useSelector(filterSelector);
+  const error = useSelector(selectError);
+  const contacts = useSelector(selectItems);
+  const filter = useSelector(selectFilter);
   const dispatch = useDispatch();
 
   const filteredContacts = useMemo(() => {
@@ -21,23 +20,26 @@ export const ContactsList = () => {
   }, [contacts, filter]);
 
   return (
-    <div>
-      <ListGroup>
+    <div className="container mt-4">
+      {error && <div className="alert alert-danger">{error}</div>}
+      <ul className="list-group">
         {filteredContacts.map(contact => (
-          <ListGroup.Item key={contact.id} className={css.listItem}>
+          <li
+            key={contact.id}
+            className="list-group-item d-flex justify-content-between align-items-center"
+          >
             <span>
-              {contact.name}: {contact.number}
+              {contact.name}: {contact.number || contact.phone}
             </span>
-            <Button
-              variant="danger"
+            <button
               onClick={() => dispatch(deleteContact(contact.id))}
-              className={css.buttonFilter}
+              className="btn btn-danger"
             >
               Delete
-            </Button>
-          </ListGroup.Item>
+            </button>
+          </li>
         ))}
-      </ListGroup>
+      </ul>
     </div>
   );
 };
